@@ -39,12 +39,36 @@ public class SecretSanter {
             }
         }
 
-        if(Account_sid == null|| Account_token == null){
-            throw new IOException("Account_sid or Account_token wasn't provided. Please use -auth-id and -auth-token to set these.");
-        }
+        validateCreds(Account_sid, Account_token);
 
 //        Twilio.init(Account_sid, Account_token);
 
+        assignSecretSantas(persons);
+
+//        Message message = Message.creator(new PhoneNumber("+64278484379"), new PhoneNumber("+15042084202"),
+//                "This is a test text from ward's computer all done using code. Please text me on 0278484379 to let me know if this worked. Cheers!")
+//                .create();
+//
+//        System.out.println(message.getSid());
+    }
+
+    private static List<Person> assignSecretSantas(List<Person> persons) {
+        randomizeSecretSantas(persons);
+
+        for(int i = 0; i < persons.size(); i++){
+            persons.get(i).setSecretSantaId(i);
+        }
+
+        for (Person person: persons) {
+            person.setSecretSanta(persons.stream().filter(p -> p.getId() == person.getSecretSantaId()).findFirst().get());
+
+            System.out.println(person.getName() + " has the secret santa of " + person.getSecretSanta().getName());
+        }
+
+        return persons;
+    }
+
+    private static void randomizeSecretSantas(List<Person> persons) {
         while(true){
             Collections.shuffle(persons);
 
@@ -60,21 +84,11 @@ public class SecretSanter {
                 break;
             }
         }
+    }
 
-        for(int i = 0; i < persons.size(); i++){
-            persons.get(i).setSecretSantaId(i);
+    private static void validateCreds(String account_sid, String account_token) throws IOException {
+        if(account_sid == null|| account_token == null){
+            throw new IOException("Account_sid or Account_token wasn't provided. Please use -auth-id and -auth-token to set these.");
         }
-
-        for (Person person: persons) {
-            person.setSecretSanta(persons.stream().filter(p -> p.getId() == person.getSecretSantaId()).findFirst().get());
-
-            System.out.println(person.getName() + " has the secret santa of " + person.getSecretSanta().getName());
-        }
-
-//        Message message = Message.creator(new PhoneNumber("+64278484379"), new PhoneNumber("+15042084202"),
-//                "This is a test text from ward's computer all done using code. Please text me on 0278484379 to let me know if this worked. Cheers!")
-//                .create();
-//
-//        System.out.println(message.getSid());
     }
 }
