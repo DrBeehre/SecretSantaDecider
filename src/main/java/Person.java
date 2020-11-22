@@ -1,13 +1,44 @@
 public class Person {
 
+    private int id;
     private String name;
-    private Integer contactNumber;
+    private String contactNumber;
+    private Integer secretSantaId;
     private Person secretSanta;
 
-    public Person(String name, Integer contactNumber, Person secretSanta) {
+    public Person(int id, String name, String contactNumber, Integer secretSantaId) {
+        this.id = id;
         this.name = name;
         this.contactNumber = contactNumber;
+        this.secretSantaId = secretSantaId;
+    }
+
+    public void setSecretSantaId(Integer secretSantaId) {
+        this.secretSantaId = secretSantaId;
+    }
+
+    public Person getSecretSanta() {
+        return secretSanta;
+    }
+
+    public void setSecretSanta(Person secretSanta) {
         this.secretSanta = secretSanta;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getSecretSantaId() {
+        return secretSantaId;
+    }
+
+    public void setSecretSantaId(int secretSantaId) {
+        this.secretSantaId = secretSantaId;
     }
 
     public String getName() {
@@ -18,19 +49,12 @@ public class Person {
         this.name = name;
     }
 
-    public Integer getContactNumber() {
+    public String getContactNumber() {
         return contactNumber;
     }
 
-    public void setContactNumber(Integer contactNumber) {
+    public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
     }
 
-    public Person getSecretSanta() {
-        return secretSanta;
-    }
-
-    public void setSecretSanta(Person secretSanta) {
-        this.secretSanta = secretSanta;
-    }
 }
