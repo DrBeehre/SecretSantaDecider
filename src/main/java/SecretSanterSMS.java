@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SecretSanter {
+public class SecretSanterSMS {
 
     public static void main(String[] args) throws IOException {
 
@@ -33,7 +33,7 @@ public class SecretSanter {
                 if(args[i].equals("-person")){
                     String[] personsDetails = args[i+1].split(",");
 
-                    persons.add(new Person(personIdCounter, personsDetails[0], personsDetails[1], null));
+                    //persons.add(new Person(personIdCounter, personsDetails[0], personsDetails[1], null));
                     personIdCounter++;
                 }
             }
