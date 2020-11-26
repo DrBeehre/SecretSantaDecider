@@ -46,6 +46,9 @@ public class SecretSanta {
     }
 
     private static List<Person> assignSecretSantas(List<Person> persons) {
+
+        assignPreAssignedSecretSantas(persons);
+
         randomizeSecretSantas(persons);
 
         for(int i = 0; i < persons.size(); i++){
@@ -53,12 +56,28 @@ public class SecretSanta {
         }
 
         for (Person person: persons) {
-            person.setSecretSanta(persons.stream().filter(p -> p.getId() == person.getSecretSantaId()).findFirst().get());
+            person.setSecretSanta(persons.stream()
+                    .filter(p -> p.getId() == person.getSecretSantaId())
+                    .findFirst()
+                    .get()
+            );
 
             System.out.println(person.getName() + " has the secret santa of " + person.getSecretSanta().getName());
         }
 
         return persons;
+    }
+
+    private static void assignPreAssignedSecretSantas(List<Person> persons){
+        for (Person person : persons) {
+            if(!person.getPreAssignedSS().equals("null")){
+                person.setPreAssignedSSID(persons.stream()
+                        .filter(p -> p.getName().equals(person.getPreAssignedSS()))
+                        .findFirst()
+                        .get()
+                        .getId());
+            }
+        }
     }
 
     private static void randomizeSecretSantas(List<Person> persons) {
@@ -67,7 +86,7 @@ public class SecretSanta {
 
             boolean badsort = false;
             for(int i = 0; i < persons.size(); i++){
-                if(persons.get(i).getId() == i){
+                if(persons.get(i).getId() == i || (persons.get(i).getPreAssignedSSID()!= null && persons.get(i).getPreAssignedSSID() != i)){
                     badsort = true;
                     break;
                 }
@@ -76,6 +95,12 @@ public class SecretSanta {
             if(!badsort){
                 break;
             }
+        }
+    }
+
+    private static void printOut(List<Person> persons){
+        for (Person person : persons) {
+            System.out.println(person.toString());
         }
     }
 }

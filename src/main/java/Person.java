@@ -8,6 +8,7 @@ public class Person {
     private String email;
     private Boolean exclude;
     private String preAssignedSS;
+    private Integer preAssignedSSID;
 
     public Person(int id, String name, String contactNumber, String email, Boolean exclude, String preAssignedSS) {
         this.id = id;
@@ -16,6 +17,15 @@ public class Person {
         this.email = email;
         this.exclude = exclude;
         this.preAssignedSS = preAssignedSS;
+        this.preAssignedSSID = null;
+    }
+
+    public Integer getPreAssignedSSID() {
+        return preAssignedSSID;
+    }
+
+    public void setPreAssignedSSID(Integer preAssignedSSID) {
+        this.preAssignedSSID = preAssignedSSID;
     }
 
     public void setSecretSantaId(Integer secretSantaId) {
@@ -84,5 +94,20 @@ public class Person {
 
     public void setPreAssignedSS(String preAssignedSS) {
         this.preAssignedSS = preAssignedSS;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", contactNumber='" + contactNumber + '\'' +
+                ", secretSantaId=" + secretSantaId +
+                ", secretSanta=" + secretSanta +
+                ", email='" + email + '\'' +
+                ", exclude=" + exclude +
+                ", preAssignedSS='" + preAssignedSS + '\'' +
+                ", preAssignedSSID=" + preAssignedSSID +
+                '}';
     }
 }
