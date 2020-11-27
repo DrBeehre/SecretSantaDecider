@@ -6,11 +6,13 @@ public class Person {
     private Integer secretSantaId;
     private Person secretSanta;
     private String email;
-    private Boolean exclude;
+    private String exclude;
+    private Integer excludeId;
     private String preAssignedSS;
     private Integer preAssignedSSID;
+    private Double priceCapOverride;
 
-    public Person(int id, String name, String contactNumber, String email, Boolean exclude, String preAssignedSS) {
+    public Person(int id, String name, String contactNumber, String email, String exclude, String preAssignedSS, Double priceCapOverride) {
         this.id = id;
         this.name = name;
         this.contactNumber = contactNumber;
@@ -18,6 +20,24 @@ public class Person {
         this.exclude = exclude;
         this.preAssignedSS = preAssignedSS;
         this.preAssignedSSID = null;
+        this.excludeId = null;
+        this.priceCapOverride = priceCapOverride;
+    }
+
+    public Double getPriceCapOverride() {
+        return priceCapOverride;
+    }
+
+    public void setPriceCapOverride(Double priceCapOverride) {
+        this.priceCapOverride = priceCapOverride;
+    }
+
+    public Integer getExcludeId() {
+        return excludeId;
+    }
+
+    public void setExcludeId(Integer excludeId) {
+        this.excludeId = excludeId;
     }
 
     public Integer getPreAssignedSSID() {
@@ -80,11 +100,11 @@ public class Person {
         this.email = email;
     }
 
-    public Boolean getExclude() {
+    public String getExclude() {
         return exclude;
     }
 
-    public void setExclude(Boolean exclude) {
+    public void setExclude(String exclude) {
         this.exclude = exclude;
     }
 

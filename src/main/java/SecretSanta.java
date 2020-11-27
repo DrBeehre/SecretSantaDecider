@@ -3,6 +3,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class SecretSanta {
+
+    private static Double DEFAULT_PRICE_CAP = 100.00;
+
     public static void main(String[] args) {
 
         //Here we set the properties needed to send an email
@@ -36,7 +39,7 @@ public class SecretSanta {
                 } else if(args[i].equals("-person")){
                     String[] personsDetails = args[i+1].split(",");
 
-                    persons.add(new Person(personIdCounter, personsDetails[0], personsDetails[1], personsDetails[2], Boolean.getBoolean(personsDetails[3]), personsDetails[4]));
+                    persons.add(new Person(personIdCounter, personsDetails[0], personsDetails[1], personsDetails[2], personsDetails[3], personsDetails[4], Double.parseDouble(personsDetails[5])));
                     personIdCounter++;
                 }
             }
@@ -47,7 +50,9 @@ public class SecretSanta {
 
     private static List<Person> assignSecretSantas(List<Person> persons) {
 
-        assignPreAssignedSecretSantas(persons);
+        assignPreAssignedSecretSantasId(persons);
+
+        assignExcludionId(persons);
 
         randomizeSecretSantas(persons);
 
@@ -68,7 +73,19 @@ public class SecretSanta {
         return persons;
     }
 
-    private static void assignPreAssignedSecretSantas(List<Person> persons){
+    private static void assignExcludionId(List<Person> persons){
+        for (Person person : persons) {
+            if(!person.getExclude().equals("null")){
+                person.setExcludeId(persons.stream()
+                        .filter(p -> p.getName().equals(person.getExclude()))
+                        .findFirst()
+                        .get()
+                        .getId());
+            }
+        }
+    }
+
+    private static void assignPreAssignedSecretSantasId(List<Person> persons){
         for (Person person : persons) {
             if(!person.getPreAssignedSS().equals("null")){
                 person.setPreAssignedSSID(persons.stream()
@@ -86,7 +103,9 @@ public class SecretSanta {
 
             boolean badsort = false;
             for(int i = 0; i < persons.size(); i++){
-                if(persons.get(i).getId() == i || (persons.get(i).getPreAssignedSSID()!= null && persons.get(i).getPreAssignedSSID() != i)){
+                if(persons.get(i).getId() == i
+                        || (persons.get(i).getPreAssignedSSID()!= null && persons.get(i).getPreAssignedSSID() != i)
+                        || (persons.get(i).getExcludeId() != null && persons.get(i).getExcludeId() == i)){
                     badsort = true;
                     break;
                 }
