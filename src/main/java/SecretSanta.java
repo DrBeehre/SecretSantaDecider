@@ -46,6 +46,22 @@ public class SecretSanta {
         }
 
         assignSecretSantas(persons);
+
+
+        // Time to do emailing baby
+        for (Person person : persons) {
+
+            String to = person.getEmail();
+            String from = "wardbeehre@gmail.com";
+            String subject = "SECRET SANTA - Be careful who you let see inside!";
+//            String bodyText = String.format();
+
+            SecretSanterEmail secretSanterEmail = new SecretSanterEmail(username, password);
+            secretSanterEmail.createEmail(to, from, subject, bodyText);
+            secretSanterEmail.sendEmail();
+
+        }
+
     }
 
     private static List<Person> assignSecretSantas(List<Person> persons) {
