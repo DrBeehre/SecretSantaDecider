@@ -9,48 +9,48 @@ import java.util.List;
 
 public class SecretSanterSMS {
 
-    public static void main(String[] args) throws IOException {
-
-        String Account_sid = null;
-        String Account_token = null;
-
-        List<Person> persons = new ArrayList<>();
-        int personIdCounter = 0;
-
-        if(args.length > 0){
-            for(int i = 0; i < args.length; i++){
-
-                // Get Creds
-                if(args[i].equals("-auth-id")){
-                    Account_sid = args[i+1];
-                    i++;
-                }
-                if(args[i].equals("-auth-token")){
-                    Account_token = args[i+1];
-                    i++;
-                }
-
-                if(args[i].equals("-person")){
-                    String[] personsDetails = args[i+1].split(",");
-
-                    //persons.add(new Person(personIdCounter, personsDetails[0], personsDetails[1], null));
-                    personIdCounter++;
-                }
-            }
-        }
-
-        validateCreds(Account_sid, Account_token);
-
-//        Twilio.init(Account_sid, Account_token);
-
-        assignSecretSantas(persons);
-
-//        Message message = Message.creator(new PhoneNumber("+64278484379"), new PhoneNumber("+15042084202"),
-//                "This is a test text from ward's computer all done using code. Please text me on 0278484379 to let me know if this worked. Cheers!")
-//                .create();
+//    public static void main(String[] args) throws IOException {
 //
-//        System.out.println(message.getSid());
-    }
+//        String Account_sid = null;
+//        String Account_token = null;
+//
+//        List<Person> persons = new ArrayList<>();
+//        int personIdCounter = 0;
+//
+//        if(args.length > 0){
+//            for(int i = 0; i < args.length; i++){
+//
+//                // Get Creds
+//                if(args[i].equals("-auth-id")){
+//                    Account_sid = args[i+1];
+//                    i++;
+//                }
+//                if(args[i].equals("-auth-token")){
+//                    Account_token = args[i+1];
+//                    i++;
+//                }
+//
+//                if(args[i].equals("-person")){
+//                    String[] personsDetails = args[i+1].split(",");
+//
+//                    //persons.add(new Person(personIdCounter, personsDetails[0], personsDetails[1], null));
+//                    personIdCounter++;
+//                }
+//            }
+//        }
+
+//        validateCreds(Account_sid, Account_token);
+//
+////        Twilio.init(Account_sid, Account_token);
+//
+//        assignSecretSantas(persons);
+//
+////        Message message = Message.creator(new PhoneNumber("+64278484379"), new PhoneNumber("+15042084202"),
+////                "This is a test text from ward's computer all done using code. Please text me on 0278484379 to let me know if this worked. Cheers!")
+////                .create();
+////
+////        System.out.println(message.getSid());
+//    }
 
     private static List<Person> assignSecretSantas(List<Person> persons) {
         randomizeSecretSantas(persons);

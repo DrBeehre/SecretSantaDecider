@@ -1,3 +1,7 @@
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -6,6 +10,9 @@ public class SecretSanta {
 
     private static Double DEFAULT_PRICE_CAP = 100.00;
 
+    private static String accountSid = null;
+    private static String accountToken = null;
+
     public static void main(String[] args) {
 
         //Here we set the properties needed to send an email
@@ -13,6 +20,7 @@ public class SecretSanta {
         // makes shit safer
         String username = null;
         String password = null;
+
 
 //        String to = args[2];
 //        String from = args[3];
@@ -36,6 +44,12 @@ public class SecretSanta {
                 }else if(args[i].equals("-gmail-password")){
                     password = args[i+1];
                     i++;
+                } else if(args[i].equals("-auth-sid")){
+                    accountSid = args[i+1];
+                    i++;
+                } else if(args[i].equals("-auth-token")){
+                    accountToken = args[i+1];
+                    i++;
                 } else if(args[i].equals("-person")){
                     String[] personsDetails = args[i+1].split(",");
 
@@ -52,8 +66,14 @@ public class SecretSanta {
 //        testAssignment(persons);
 
         // Time to do emailing baby
-//        sendEmail(username, password, persons);
-        sendTestEmail(username, password, persons);
+        sendEmail(username, password, persons);
+//        sendTestEmail(username, password, persons);
+
+//        for (Person person : persons) {
+//            if(person.getName().equals("Melanie")){
+//                sendText(person, "This is a test, please text ward confirming this worked");
+//            }
+//        }
     }
 
     private static void sendTestEmail(String username, String password, List<Person> persons) {
@@ -80,13 +100,6 @@ public class SecretSanta {
     private static void sendEmail(String username, String password, List<Person> persons) {
         for (Person person : persons) {
 
-            if(person.getPriceCapOverride().equals(0.0)){
-                person.setPriceCapOverride(DEFAULT_PRICE_CAP);
-            }
-
-            String to = person.getEmail();
-            String from = "wardbeehre@gmail.com";
-            String subject = "SECRET SANTA - 24 Days - Be careful who you let see inside!";
             String bodyText = String.format("Good Morning %s %n", person.getName())
                     .concat(String.format("%nYou are the Secret Santa for %s %n", person.getSecretSanta().getName()))
                     .concat(String.format("%nYour limit is $%.2f %n", person.getPriceCapOverride()))
@@ -94,14 +107,38 @@ public class SecretSanta {
                             " aim for around the limit, price wise.%n " +
                             "Your secret person has provided you with the following hint if you are stuck looking for " +
                             "ideas for what to get them.%n" +
-                            "Hint: %s", person.getHint())) // This is where the hint goes
+                            "Hint: %s", person.getHint()))
                     .concat(String.format("%n%nCheers!%nWard"));
+
+            if(person.getName().equals("Melanie")){
+                sendText(person, bodyText);
+            }
+
+            if(person.getPriceCapOverride().equals(0.0)){
+                person.setPriceCapOverride(DEFAULT_PRICE_CAP);
+            }
+
+            String to = person.getEmail();
+            String from = "wardbeehre@gmail.com";
+            String subject = "SECRET SANTA - FOR REAL - 24 Days - Be careful who you let see inside!";
+
 
             SecretSanterEmail secretSanterEmail = new SecretSanterEmail(username, password);
             secretSanterEmail.createEmail(to, from, subject, bodyText);
             secretSanterEmail.sendEmail();
 
         }
+    }
+
+    private static void sendText(Person person, String body){
+
+
+        Twilio.init(accountSid, accountToken);
+
+        Message message = Message.creator(new PhoneNumber(person.getContactNumber()), new PhoneNumber("+15042084202"),
+                body).create();
+
+        System.out.println(message.getSid());
     }
 
     private static List<Person> assignSecretSantas(List<Person> persons) {
@@ -123,7 +160,7 @@ public class SecretSanta {
                     .get()
             );
 
-            System.out.println(person.getName() + " has the secret santa of " + person.getSecretSanta().getName());
+           // System.out.println(person.getName() + " has the secret santa of " + person.getSecretSanta().getName());
         }
 
         return persons;
