@@ -39,7 +39,7 @@ public class SecretSanta {
                 } else if(args[i].equals("-person")){
                     String[] personsDetails = args[i+1].split(",");
 
-                    persons.add(new Person(personIdCounter, personsDetails[0], personsDetails[1], personsDetails[2], personsDetails[3], personsDetails[4], Double.parseDouble(personsDetails[5])));
+                    persons.add(new Person(personIdCounter, personsDetails[0], personsDetails[1], personsDetails[2], personsDetails[3], personsDetails[4], Double.parseDouble(personsDetails[5]), personsDetails[6]));
                     personIdCounter++;
                 }
             }
@@ -47,21 +47,61 @@ public class SecretSanta {
 
         assignSecretSantas(persons);
 
+//        printOut(persons);
+
+//        testAssignment(persons);
 
         // Time to do emailing baby
+//        sendEmail(username, password, persons);
+        sendTestEmail(username, password, persons);
+    }
+
+    private static void sendTestEmail(String username, String password, List<Person> persons) {
         for (Person person : persons) {
+
+            if(person.getPriceCapOverride().equals(0.0)){
+                person.setPriceCapOverride(DEFAULT_PRICE_CAP);
+            }
 
             String to = person.getEmail();
             String from = "wardbeehre@gmail.com";
-            String subject = "SECRET SANTA - Be careful who you let see inside!";
-//            String bodyText = String.format();
+            String subject = "Test - SECRET SANTA - Please reply to confirm this worked";
+            String bodyText = "This is a test to see if this email has worked. \n" +
+                    "\nPlease reply!\n" +
+                    "\nCheers, Ward";
 
             SecretSanterEmail secretSanterEmail = new SecretSanterEmail(username, password);
             secretSanterEmail.createEmail(to, from, subject, bodyText);
             secretSanterEmail.sendEmail();
 
         }
+    }
 
+    private static void sendEmail(String username, String password, List<Person> persons) {
+        for (Person person : persons) {
+
+            if(person.getPriceCapOverride().equals(0.0)){
+                person.setPriceCapOverride(DEFAULT_PRICE_CAP);
+            }
+
+            String to = person.getEmail();
+            String from = "wardbeehre@gmail.com";
+            String subject = "SECRET SANTA - 24 Days - Be careful who you let see inside!";
+            String bodyText = String.format("Good Morning %s %n", person.getName())
+                    .concat(String.format("%nYou are the Secret Santa for %s %n", person.getSecretSanta().getName()))
+                    .concat(String.format("%nYour limit is $%.2f %n", person.getPriceCapOverride()))
+                    .concat(String.format("%nYou are free to get anything appropriate as your gift(s), but please try" +
+                            " aim for around the limit, price wise.%n " +
+                            "Your secret person has provided you with the following hint if you are stuck looking for " +
+                            "ideas for what to get them.%n" +
+                            "Hint: %s", person.getHint())) // This is where the hint goes
+                    .concat(String.format("%n%nCheers!%nWard"));
+
+            SecretSanterEmail secretSanterEmail = new SecretSanterEmail(username, password);
+            secretSanterEmail.createEmail(to, from, subject, bodyText);
+            secretSanterEmail.sendEmail();
+
+        }
     }
 
     private static List<Person> assignSecretSantas(List<Person> persons) {
@@ -138,4 +178,13 @@ public class SecretSanta {
             System.out.println(person.toString());
         }
     }
+
+//    private static void testAssignment(List<Person> persons){
+//        for(int i = 0; i < 10; i++){
+//            System.out.println("------------------------------------");
+//            assignSecretSantas(persons);
+//            printOut(persons);
+//            System.out.println("------------------------------------");
+//        }
+//    }
 }

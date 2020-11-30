@@ -11,8 +11,9 @@ public class Person {
     private String preAssignedSS;
     private Integer preAssignedSSID;
     private Double priceCapOverride;
+    private String hint;
 
-    public Person(int id, String name, String contactNumber, String email, String exclude, String preAssignedSS, Double priceCapOverride) {
+    public Person(int id, String name, String contactNumber, String email, String exclude, String preAssignedSS, Double priceCapOverride, String hint) {
         this.id = id;
         this.name = name;
         this.contactNumber = contactNumber;
@@ -22,6 +23,15 @@ public class Person {
         this.preAssignedSSID = null;
         this.excludeId = null;
         this.priceCapOverride = priceCapOverride;
+        this.hint = hint;
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
     }
 
     public Double getPriceCapOverride() {
@@ -114,20 +124,5 @@ public class Person {
 
     public void setPreAssignedSS(String preAssignedSS) {
         this.preAssignedSS = preAssignedSS;
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", contactNumber='" + contactNumber + '\'' +
-                ", secretSantaId=" + secretSantaId +
-                ", secretSanta=" + secretSanta +
-                ", email='" + email + '\'' +
-                ", exclude=" + exclude +
-                ", preAssignedSS='" + preAssignedSS + '\'' +
-                ", preAssignedSSID=" + preAssignedSSID +
-                '}';
     }
 }
