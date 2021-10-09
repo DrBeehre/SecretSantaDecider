@@ -12,8 +12,9 @@ public class Person {
     private Integer preAssignedSSID;
     private Double priceCapOverride;
     private String hint;
+    private String deliveryChoice;
 
-    public Person(int id, String name, String contactNumber, String email, String exclude, String preAssignedSS, Double priceCapOverride, String hint) {
+    public Person(int id, String name, String contactNumber, String email, String exclude, String preAssignedSS, Double priceCapOverride, String hint, String deliveryChoice) {
         this.id = id;
         this.name = name;
         this.contactNumber = contactNumber;
@@ -24,6 +25,7 @@ public class Person {
         this.excludeId = null;
         this.priceCapOverride = priceCapOverride;
         this.hint = hint;
+        this.deliveryChoice = deliveryChoice;
     }
 
     public String getHint() {
@@ -124,5 +126,13 @@ public class Person {
 
     public void setPreAssignedSS(String preAssignedSS) {
         this.preAssignedSS = preAssignedSS;
+    }
+
+    public String getDeliveryChoice() {
+        return deliveryChoice;
+    }
+
+    public void setDeliveryChoice(String deliveryChoice) {
+        this.deliveryChoice = deliveryChoice;
     }
 }

@@ -7,12 +7,12 @@ public class SecretSanterEmail {
     private String username = "";
     private String password = "";
     private int port = 587;
-    private String host = "smtp.gmail.com";
 
     private Session session = null;
-    private MimeMessage message = null;
+    private Message message = null;
 
     private String _from = "";
+    private String _to = "";
 
     public SecretSanterEmail(String username, String password) {
         this.username = username;
@@ -24,21 +24,29 @@ public class SecretSanterEmail {
                                    String subject,
                                    String bodyText) {
 
+        _to = to;
         _from = from;
 
-        Properties properties = System.getProperties();
+        Properties properties = new Properties();  //System.getProperties();
 
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", host);
-        properties.put("mail.smtp.user", from);
-        properties.put("mail.smtp.password", password);
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+
         properties.put("mail.smtp.port", "587");
         properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+//        properties.put("mail.smtp.debug", "true");
+//        properties.put("mail.smtp.socketFactory.port", "465");
+//        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
-        session = Session.getDefaultInstance(properties);
-        MimeMessage email = new MimeMessage(session);
+        session = Session.getInstance(properties,
+                new javax.mail.Authenticator(){
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(from, password);
+                    }
+                });
 
         try {
+            Message email = new MimeMessage(session);
             email.setFrom(new InternetAddress(from));
             email.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             email.setSubject(subject);
@@ -56,10 +64,13 @@ public class SecretSanterEmail {
                 throw new Exception("message equals null, make sure you call 'createEmail' before calling 'sendEmail'.");
             }
 
-            Transport transport = session.getTransport("smtp");
-            transport.connect(host, _from, password);
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
+            Transport.send(message);
+            System.out.println(String.format("Email sent to %s", _to));
+
+//            Transport transport = session.getTransport("smtp");
+//            transport.connect("smtp.gmail.com", _from, password);
+//            transport.send(message, message.getAllRecipients());
+//            transport.close();
 
         }catch (Exception e){
             e.printStackTrace();

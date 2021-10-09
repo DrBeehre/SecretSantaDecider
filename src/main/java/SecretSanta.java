@@ -1,7 +1,6 @@
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,13 +12,14 @@ public class SecretSanta {
     private static String accountSid = null;
     private static String accountToken = null;
 
+    private static String username = null;
+    private static String password = null;
+
     public static void main(String[] args) {
 
         //Here we set the properties needed to send an email
         // We need the username and password to be passed in as arguements when running this app
         // makes shit safer
-        String username = null;
-        String password = null;
 
 
 //        String to = args[2];
@@ -51,9 +51,19 @@ public class SecretSanta {
                     accountToken = args[i+1];
                     i++;
                 } else if(args[i].equals("-person")){
+                    System.out.println(args[i+1]);
                     String[] personsDetails = args[i+1].split(",");
 
-                    persons.add(new Person(personIdCounter, personsDetails[0], personsDetails[1], personsDetails[2], personsDetails[3], personsDetails[4], Double.parseDouble(personsDetails[5]), personsDetails[6]));
+                    persons.add(new Person(personIdCounter,
+                            personsDetails[0],
+                            personsDetails[1],
+                            personsDetails[2],
+                            personsDetails[3],
+                            personsDetails[4],
+                            Double.parseDouble(personsDetails[5]),
+                            personsDetails[6],
+                            personsDetails[7])
+                    );
                     personIdCounter++;
                 }
             }
@@ -61,19 +71,23 @@ public class SecretSanta {
 
         assignSecretSantas(persons);
 
-//        printOut(persons);
 
-//        testAssignment(persons);
+        //TODO: Add Tests for checking that the assigning method's work as expected
+        //TODO: Add check for deliveryChoice to assign a delieveryMethod to the user
+        //TODO: Validate that the email and texting still works and then send them out!
 
-        // Time to do emailing baby
-        sendEmail(username, password, persons);
-//        sendTestEmail(username, password, persons);
 
-//        for (Person person : persons) {
-//            if(person.getName().equals("Melanie")){
-//                sendText(person, "This is a test, please text ward confirming this worked");
-//            }
-//        }
+        for (Person person : persons) {
+            if(person.getPriceCapOverride().equals(0.0)){
+                person.setPriceCapOverride(DEFAULT_PRICE_CAP);
+            }
+
+            if(person.getDeliveryChoice().equals("Email")){
+                sendEmail(person);
+            }else if(person.getDeliveryChoice().equals("SMS")){
+                sendText(person);
+            }
+        }
     }
 
     private static void sendTestEmail(String username, String password, List<Person> persons) {
@@ -97,57 +111,87 @@ public class SecretSanta {
         }
     }
 
-    private static void sendEmail(String username, String password, List<Person> persons) {
+    private static String sendEmail(Person person){
+        String to = person.getEmail();
+        String from = "wardbeehre@gmail.com";
+        String subject = "SECRET SANTA - TEST - 81 Days - Be careful who you let see inside!";
+
+        SecretSanterEmail secretSanterEmail = new SecretSanterEmail(username, password);
+        secretSanterEmail.createEmail(to, from, subject, getTextBody(person));
+        secretSanterEmail.sendEmail();
+
+        return "complete";
+    }
+
+    private static String getTextBody(Person person){
+        String bodyText = String.format("Good Day %s %n", person.getName())
+                .concat(String.format("%nYou are the Secret Santa for %s %n", person.getSecretSanta().getName()))
+                .concat(String.format("%nYour limit is $%.2f %n", person.getPriceCapOverride()))
+                .concat(String.format("%nYou are free to get anything appropriate as your gift(s), but please try" +
+                        " aim for around the limit, price wise.%n " +
+                        "Your secret person has provided you with the following hint if you are stuck looking for " +
+                        "ideas for what to get them.%n" +
+                        "Hint: %s", person.getHint()))
+                .concat(String.format("%n%nCheers!%nWard"));
+
+        return bodyText;
+    }
+
+    private static String sendEmail(String username, String password, List<Person> persons) {
         for (Person person : persons) {
 
-            String bodyText = String.format("Good Morning %s %n", person.getName())
+            String bodyText = String.format("Good Day %s %n", person.getName())
                     .concat(String.format("%nYou are the Secret Santa for %s %n", person.getSecretSanta().getName()))
                     .concat(String.format("%nYour limit is $%.2f %n", person.getPriceCapOverride()))
-                    .concat(String.format("%nYou are free to get anything appropriate as your gift(s), but please try" +
-                            " aim for around the limit, price wise.%n " +
+                    .concat(String.format("%nYou are free to get anything appropriate as your gift(s), but please try " +
+                            "aim for around the limit, price wise.%n" +
                             "Your secret person has provided you with the following hint if you are stuck looking for " +
                             "ideas for what to get them.%n" +
                             "Hint: %s", person.getHint()))
                     .concat(String.format("%n%nCheers!%nWard"));
 
-            if(person.getName().equals("Melanie")){
-                sendText(person, bodyText);
-            }
-
-            if(person.getPriceCapOverride().equals(0.0)){
-                person.setPriceCapOverride(DEFAULT_PRICE_CAP);
-            }
+//            if(person.getPriceCapOverride().equals(0.0)){
+//                person.setPriceCapOverride(DEFAULT_PRICE_CAP);
+//            }
 
             String to = person.getEmail();
             String from = "wardbeehre@gmail.com";
-            String subject = "SECRET SANTA - FOR REAL - 24 Days - Be careful who you let see inside!";
+            String subject = "SECRET SANTA - FOR REAL - 84 Days - Be careful who you let see inside!";
 
 
             SecretSanterEmail secretSanterEmail = new SecretSanterEmail(username, password);
             secretSanterEmail.createEmail(to, from, subject, bodyText);
             secretSanterEmail.sendEmail();
-
         }
+
+        return "complete";
     }
 
-    private static void sendText(Person person, String body){
+    private static void sendText(Person person){
 
 
         Twilio.init(accountSid, accountToken);
 
-        Message message = Message.creator(new PhoneNumber(person.getContactNumber()), new PhoneNumber("+15042084202"),
-                body).create();
+        Message message = Message.creator(new PhoneNumber(person.getContactNumber()), new PhoneNumber("+12183327605"),
+                getTextBody(person)).create();
 
         System.out.println(message.getSid());
     }
 
     private static List<Person> assignSecretSantas(List<Person> persons) {
 
-        assignPreAssignedSecretSantasId(persons);
+        //assignPreAssignedSecretSantasId(persons);
 
-        assignExcludionId(persons);
+        //assignExcludionId(persons);
 
         randomizeSecretSantas(persons);
+
+        setSecretSantas(persons);
+
+        return persons;
+    }
+
+    private static void setSecretSantas(List<Person> persons) {
 
         for(int i = 0; i < persons.size(); i++){
             persons.get(i).setSecretSantaId(i);
@@ -162,8 +206,6 @@ public class SecretSanta {
 
            // System.out.println(person.getName() + " has the secret santa of " + person.getSecretSanta().getName());
         }
-
-        return persons;
     }
 
     private static void assignExcludionId(List<Person> persons){
