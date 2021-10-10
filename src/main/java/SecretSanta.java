@@ -76,6 +76,9 @@ public class SecretSanta {
         //TODO: Add check for deliveryChoice to assign a delieveryMethod to the user
         //TODO: Validate that the email and texting still works and then send them out!
 
+        for (Person person: persons) {
+            System.out.println(person.getName());
+        }
 
         for (Person person : persons) {
             if(person.getPriceCapOverride().equals(0.0)){
@@ -131,7 +134,7 @@ public class SecretSanta {
                         " aim for around the limit, price wise.%n " +
                         "Your secret person has provided you with the following hint if you are stuck looking for " +
                         "ideas for what to get them.%n" +
-                        "Hint: %s", person.getHint()))
+                        "Hint: %s", person.getSecretSanta().getHint()))
                 .concat(String.format("%n%nCheers!%nWard"));
 
         return bodyText;
@@ -147,7 +150,7 @@ public class SecretSanta {
                             "aim for around the limit, price wise.%n" +
                             "Your secret person has provided you with the following hint if you are stuck looking for " +
                             "ideas for what to get them.%n" +
-                            "Hint: %s", person.getHint()))
+                            "Hint: %s", person.getSecretSanta().getHint()))
                     .concat(String.format("%n%nCheers!%nWard"));
 
 //            if(person.getPriceCapOverride().equals(0.0)){
@@ -175,7 +178,7 @@ public class SecretSanta {
         Message message = Message.creator(new PhoneNumber(person.getContactNumber()), new PhoneNumber("+12183327605"),
                 getTextBody(person)).create();
 
-        System.out.println(message.getSid());
+        System.out.println("Text sent to " + person.getName());
     }
 
     private static List<Person> assignSecretSantas(List<Person> persons) {
